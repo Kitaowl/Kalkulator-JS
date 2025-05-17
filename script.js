@@ -2,13 +2,17 @@ const display = document.querySelector(".calculator-screen");
 
 const buttons = document.querySelectorAll(".calculator-keys>button");
 
+// Zmienne przycisków
 let buttonNum = [];
 let buttonOperator = [];
 let buttonFunction = [];
+
+// Główne zmienne stanu kalkulatora
 let cache = [];
 let cacheValue = "";
 let lastOperator = null;
 
+// Funckcje dla przycisków działań matematycznych
 buttons.forEach((button) => {
   if (button.classList.contains("operator")) {
     buttonOperator.push(button);
@@ -30,10 +34,11 @@ buttons.forEach((button) => {
             divide(num);
             break;
         }
-        lastOperator = operator;
+        lastOperator = operator; // Zapamiętanie ostatniego operatora
       }
     });
   } else if (button.classList.contains("decimal")) {
+    // Umożliwienie działania z liczbami dziesiętnymi
     button.addEventListener("click", (e) => {
       if (!cacheValue.includes(",")) {
         setDisplayValue(",");
@@ -43,8 +48,8 @@ buttons.forEach((button) => {
     buttonFunction.push(button);
     button.addEventListener("click", (e) => {
       clearDisplay();
-      cache = [];
-      lastOperator = null;
+      cache = []; // Reset pamięci
+      lastOperator = null; // Reset ostatniego operatora
     });
   } else if (button.classList.contains("equal-sign")) {
     buttonFunction.push(button);
@@ -61,17 +66,22 @@ buttons.forEach((button) => {
   }
 });
 
+// Funkcja dodawania, w wartości float musi być kropka zamiast przecinka
 function setDisplayValue(value) {
   display.innerText += value;
   console.log("value:" + value);
-  cacheValue += value;
+  cacheValue += value; // Aktualizacja wartości
 }
 
 function clearDisplay() {
   display.innerText = "";
-  cacheValue = "";
+  cacheValue = ""; // Reset wartości
 }
 
+// Dodaje liczby w kalkulatorze:
+// 1. Zapamiętuje wpisaną liczbę
+// 2. Jak ma dwie liczby - dodaje je i pokazuje wynik
+// 3. Jak ma jedną - czyści ekran i czeka na drugą
 function add(a) {
   cache.push(a);
   console.log(cache);
@@ -80,7 +90,7 @@ function add(a) {
     let sum = cache[0] + cache[1];
     cache = [sum];
     setDisplayValue(sum.toString().replace(".", ","));
-    cacheValue = "";
+    cacheValue = ""; // Reset po operacji
   } else {
     clearDisplay();
     cacheValue = "";
@@ -132,6 +142,8 @@ function divide(a) {
   }
 }
 
+// Obsługa przycisku równości:
+// Wykonuje ostatnią operację lub wyświetla wartość z cache
 function equal() {
   if (lastOperator && cacheValue !== "") {
     const num = parseFloat(cacheValue.replace(",", "."));
@@ -149,14 +161,12 @@ function equal() {
         divide(num);
         break;
     }
-    lastOperator = null;
+    lastOperator = null; // Reset po wykonaniu
   } else if (cache.length > 0) {
     clearDisplay();
     setDisplayValue(cache[0].toString().replace(".", ","));
   }
 }
-
-// Metoda/funkcja dodawania liczb zmiennoprzecinkowych: dodawany jest przecinek, a wartości float muszą zawierać kropkę (np. 1.2 zamiast 1,2).
 
 // Te zmienne nie są wykorzystywane. Dodaje się do nich przyciski z kalkulatora, ale potem nie są używane.
 // Pasowałoby je usunąć z kodu.
